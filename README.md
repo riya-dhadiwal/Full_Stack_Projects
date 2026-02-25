@@ -118,5 +118,3 @@ Enter your choice: 2
 - CRUD operations
 
 ### Basic system analytics
-
-Professional console formatting
