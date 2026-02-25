@@ -25,20 +25,20 @@ To build a menu-driven Java application that allows users to:
 
 🛠 Technologies Used
 
-Java (JDK 8+)
-Eclipse IDE
-Core Java Libraries
+- Java (JDK 8+)
+- Eclipse IDE
+- Core Java Libraries
 
 Concepts Covered:
 
-Classes & Objects
-ArrayList
-Methods
-Switch Case
-Scanner
-Encapsulation
-Exception Handling
-CRUD Operations
+- Classes & Objects
+- ArrayList
+- Methods
+- Switch Case
+- Scanner
+- Encapsulation
+- Exception Handling
+- CRUD Operations
 
 📂 Project Structure
 StudentManagementSystem
