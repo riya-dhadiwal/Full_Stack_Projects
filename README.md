@@ -63,8 +63,8 @@ StudentManagementSystem
     
 ✨ Features
 
-✅ Add Student (Duplicate ID validation)
-✅ View All Students (Table Format)
+-- Add Student (Duplicate ID validation)
+-- View All Students (Table Format)
 ✅ Search by ID
 ✅ Search by Name
 ✅ Search by Course
