@@ -1,18 +1,18 @@
-Student Management System
-(Console-Based Java Application)
+# Student Management System
+## (Console-Based Java Application)
 
-Project Overview
+## Project Overview
 
 The Student Management System is a console-based Java application that allows users to manage student records efficiently.
 
-This project demonstrates core Java programming concepts including:
+### This project demonstrates core Java programming concepts including:
 1) Object-Oriented Programming (OOP)
 2) ArrayList usage
 3) Exception Handling
 4) Menu-driven programs
 5) Encapsulation
 
-Objective
+### Objective
 
 To build a menu-driven Java application that allows users to:
 - Add student details
@@ -23,13 +23,13 @@ To build a menu-driven Java application that allows users to:
 - View system statistics
 - Count students per course
 
-🛠 Technologies Used
+### 🛠 Technologies Used
 
 - Java (JDK 8+)
 - Eclipse IDE
 - Core Java Libraries
 
-Concepts Covered:
+### Concepts Covered:
 
 - Classes & Objects
 - ArrayList
@@ -40,7 +40,8 @@ Concepts Covered:
 - Exception Handling
 - CRUD Operations
 
-📂 Project Structure
+## 📂 Project Structure
+```
 StudentManagementSystem
 │
 ├── Student (Class)
@@ -60,22 +61,24 @@ StudentManagementSystem
     ├── showStatistics()
     ├── countPerCourse()
     └── main()
+```
     
-Features
+## Features
 
--Add Student (Duplicate ID validation)
-- View All Students (Table Format)
-- Search by ID
-- Search by Name
-- Search by Course
-- Update Student Information
-- Delete Student
-- Show Total Students
-- Calculate Average Age
-- Count Students Per Course
-- Exception Handling
+| Feature                     | Description                          |
+|------------------------------|--------------------------------------|
+| Add Student                 | Adds new student with validation     |
+| View Students               | Displays students in table format    |
+| Search by ID                | Finds student using ID               |
+| Search by Name              | Finds student using Name             |
+| Search by Course            | Finds students in specific course    |
+| Update Student              | Modifies student details             |
+| Delete Student              | Removes student record               |
+| Show Statistics             | Shows total students & avg age       |
+| Count Per Course            | Counts students in a course          |
 
-📊 Sample Output
+### 📊 Sample Output
+
 ===== Student Management System =====
 1. Add Student
 2. View Students
@@ -96,7 +99,7 @@ Enter your choice: 2
 | 102   | Riya            | 21   | B.Tech CS           |
 -----------------------------------------------------------------------
 
-🚀 How to Run the Project (Eclipse)
+### How to Run the Project (Eclipse)
 
 - Open Eclipse IDE
 - Create New Java Project
@@ -105,7 +108,7 @@ Enter your choice: 2
 - Paste the complete code
 - Right-click → Run As → Java Application
 
-🧠 Learning Outcomes
+### Learning Outcomes
 
 - After completing this project, you will understand:
 - Java syntax and structure
@@ -114,7 +117,6 @@ Enter your choice: 2
 - Menu-driven application development
 - CRUD operations
 
-
-Basic system analytics
+### Basic system analytics
 
 Professional console formatting
