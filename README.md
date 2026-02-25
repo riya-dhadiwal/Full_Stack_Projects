@@ -61,19 +61,19 @@ StudentManagementSystem
     ├── countPerCourse()
     └── main()
     
-✨ Features
+Features
 
--- Add Student (Duplicate ID validation)
--- View All Students (Table Format)
-✅ Search by ID
-✅ Search by Name
-✅ Search by Course
-✅ Update Student Information
-✅ Delete Student
-✅ Show Total Students
-✅ Calculate Average Age
-✅ Count Students Per Course
-✅ Exception Handling
+-Add Student (Duplicate ID validation)
+- View All Students (Table Format)
+- Search by ID
+- Search by Name
+- Search by Course
+- Update Student Information
+- Delete Student
+- Show Total Students
+- Calculate Average Age
+- Count Students Per Course
+- Exception Handling
 
 📊 Sample Output
 ===== Student Management System =====
@@ -98,21 +98,21 @@ Enter your choice: 2
 
 🚀 How to Run the Project (Eclipse)
 
-Open Eclipse IDE
-Create New Java Project
-Create a class named:
-  StudentManagementSystem
-  Paste the complete code
-  Right-click → Run As → Java Application
+- Open Eclipse IDE
+- Create New Java Project
+- Create a class named:
+- StudentManagementSystem
+- Paste the complete code
+- Right-click → Run As → Java Application
 
 🧠 Learning Outcomes
 
-After completing this project, you will understand:
-Java syntax and structure
-OOP principles (Encapsulation)
-Dynamic data handling using ArrayList
-Menu-driven application development
-CRUD operations
+- After completing this project, you will understand:
+- Java syntax and structure
+- OOP principles (Encapsulation)
+- Dynamic data handling using ArrayList
+- Menu-driven application development
+- CRUD operations
 
 
 Basic system analytics
