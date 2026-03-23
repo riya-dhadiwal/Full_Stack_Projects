@@ -1,0 +1,305 @@
+import java.util.*;
+
+class BankAccount {
+
+    int accountNumber;
+    String name;
+    int pin;
+    double balance;
+    ArrayList<String> transactions = new ArrayList<>();
+
+    BankAccount(int accountNumber, String name, int pin, double balance) {
+        this.accountNumber = accountNumber;
+        this.name = name;
+        this.pin = pin;
+        this.balance = balance;
+        transactions.add("Account Created with Balance ₹" + balance);
+    }
+
+    boolean authenticate(int enteredPin) {
+        return this.pin == enteredPin;
+    }
+
+    void deposit(double amount) {
+
+        if (amount <= 0) {
+            System.out.println("❌ Invalid Amount");
+            return;
+        }
+
+        balance += amount;
+        transactions.add("Deposited ₹" + amount);
+
+        System.out.println("\n+---------------- DEPOSIT SUCCESS ----------------+");
+        System.out.printf("| Amount Deposited : ₹%-27.2f |\n", amount);
+        System.out.printf("| New Balance      : ₹%-27.2f |\n", balance);
+        System.out.println("+-------------------------------------------------+");
+    }
+
+    void withdraw(double amount) {
+
+        if (amount <= 0) {
+            System.out.println("❌ Invalid Amount");
+            return;
+        }
+
+        if (amount > balance) {
+            System.out.println("❌ Insufficient Balance");
+            return;
+        }
+
+        balance -= amount;
+        transactions.add("Withdrawn ₹" + amount);
+
+        System.out.println("\n+--------------- WITHDRAW SUCCESS ----------------+");
+        System.out.printf("| Amount Withdrawn : ₹%-26.2f |\n", amount);
+        System.out.printf("| Remaining Balance: ₹%-26.2f |\n", balance);
+        System.out.println("+-------------------------------------------------+");
+    }
+
+    void showTransactions() {
+
+        System.out.println("\n+---------------- TRANSACTION HISTORY ----------------+");
+
+        if (transactions.size() == 0) {
+            System.out.println("| No Transactions Available                           |");
+        } else {
+            for (String t : transactions) {
+                System.out.printf("| %-52s |\n", t);
+            }
+        }
+
+        System.out.println("+-----------------------------------------------------+");
+    }
+}
+
+public class BankingSystem {
+
+    static ArrayList<BankAccount> accounts = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    static BankAccount findAccount(int accNo) {
+        for (BankAccount acc : accounts)
+            if (acc.accountNumber == accNo)
+                return acc;
+        return null;
+    }
+
+    static boolean verifyPin(BankAccount acc) {
+        System.out.print("Enter PIN: ");
+        int pin = sc.nextInt();
+        return acc.authenticate(pin);
+    }
+
+    static void createAccount() {
+
+        System.out.print("Enter Account Number: ");
+        int accNo = sc.nextInt();
+
+        if (findAccount(accNo) != null) {
+            System.out.println("❌ Account Already Exists");
+            return;
+        }
+
+        sc.nextLine();
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Set PIN: ");
+        int pin = sc.nextInt();
+
+        System.out.print("Enter Initial Balance: ");
+        double bal = sc.nextDouble();
+
+        if (bal < 0) {
+            System.out.println("❌ Invalid Balance");
+            return;
+        }
+
+        accounts.add(new BankAccount(accNo, name, pin, bal));
+        System.out.println("✅ Account Created Successfully");
+    }
+
+    static void transferMoney() {
+
+        System.out.print("Enter Sender Account: ");
+        BankAccount sender = findAccount(sc.nextInt());
+
+        if (sender == null) {
+            System.out.println("❌ Sender Not Found");
+            return;
+        }
+
+        if (!verifyPin(sender)) {
+            System.out.println("❌ Wrong PIN");
+            return;
+        }
+
+        System.out.print("Enter Receiver Account: ");
+        BankAccount receiver = findAccount(sc.nextInt());
+
+        if (receiver == null) {
+            System.out.println("❌ Receiver Not Found");
+            return;
+        }
+
+        System.out.print("Enter Amount: ");
+        double amt = sc.nextDouble();
+
+        if (amt <= 0 || amt > sender.balance) {
+            System.out.println("❌ Invalid / Insufficient Balance");
+            return;
+        }
+
+        sender.balance -= amt;
+        receiver.balance += amt;
+
+        sender.transactions.add("Transferred ₹" + amt + " to " + receiver.accountNumber);
+        receiver.transactions.add("Received ₹" + amt + " from " + sender.accountNumber);
+
+        System.out.println("✅ Transfer Successful");
+    }
+
+    static void bankStats() {
+
+        if (accounts.size() == 0) {
+            System.out.println("No Accounts Available");
+            return;
+        }
+
+        double total = 0;
+        BankAccount max = accounts.get(0);
+
+        for (BankAccount a : accounts) {
+            total += a.balance;
+            if (a.balance > max.balance)
+                max = a;
+        }
+
+        double avg = total / accounts.size();
+
+        System.out.println("\n+-------------------- BANK STATISTICS --------------------+");
+        System.out.printf("| Total Accounts        : %-32d |\n", accounts.size());
+        System.out.printf("| Total Bank Balance    : ₹%-31.2f |\n", total);
+        System.out.printf("| Highest Balance Acc   : %-32d |\n", max.accountNumber);
+        System.out.printf("| Account Holder Name   : %-32s |\n", max.name);
+        System.out.printf("| Average Balance       : ₹%-31.2f |\n", avg);
+        System.out.println("+----------------------------------------------------------+");
+    }
+
+    public static void main(String[] args) {
+
+        int choice;
+
+        do {
+
+            System.out.println("\n========= BANK MENU =========");
+            System.out.println("1 Create Account");
+            System.out.println("2 Deposit");
+            System.out.println("3 Withdraw");
+            System.out.println("4 Check Balance");
+            System.out.println("5 View All Accounts");
+            System.out.println("6 Delete Account");
+            System.out.println("7 Transfer Money");
+            System.out.println("8 Transaction History");
+            System.out.println("9 Bank Statistics");
+            System.out.println("10 Exit");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+
+                case 1:
+                    createAccount();
+                    break;
+
+                case 2:
+                    System.out.print("Enter Account: ");
+                    BankAccount d = findAccount(sc.nextInt());
+                    if (d != null && verifyPin(d)) {
+                        System.out.print("Enter Amount: ");
+                        d.deposit(sc.nextDouble());
+                    } else
+                        System.out.println("❌ Error");
+                    break;
+
+                case 3:
+                    System.out.print("Enter Account: ");
+                    BankAccount w = findAccount(sc.nextInt());
+                    if (w != null && verifyPin(w)) {
+                        System.out.print("Enter Amount: ");
+                        w.withdraw(sc.nextDouble());
+                    } else
+                        System.out.println("❌ Error");
+                    break;
+
+                case 4:
+                    System.out.print("Enter Account: ");
+                    BankAccount b = findAccount(sc.nextInt());
+                    if (b != null && verifyPin(b)) {
+                        System.out.println("\n+---------------- ACCOUNT DETAILS ----------------+");
+                        System.out.printf("| Account Number : %-30d |\n", b.accountNumber);
+                        System.out.printf("| Name           : %-30s |\n", b.name);
+                        System.out.printf("| Balance        : ₹%-29.2f |\n", b.balance);
+                        System.out.println("+-------------------------------------------------+");
+                    } else
+                        System.out.println("❌ Error");
+                    break;
+
+                case 5:
+                    if (accounts.size() == 0) {
+                        System.out.println("No Accounts Found");
+                        break;
+                    }
+
+                    System.out.println("+----------------------+---------------+---------------+");
+                    System.out.printf("| %-20s | %-13s | %-13s |\n",
+                            "Account Number", "Name", "Balance");
+                    System.out.println("+----------------------+---------------+---------------+");
+
+                    for (BankAccount a : accounts) {
+                        System.out.printf("| %-20d | %-13s | ₹%-12.2f |\n",
+                                a.accountNumber, a.name, a.balance);
+                    }
+
+                    System.out.println("+----------------------+---------------+---------------+");
+                    break;
+
+                case 6:
+                    System.out.print("Enter Account to Delete: ");
+                    BankAccount del = findAccount(sc.nextInt());
+                    if (del != null && verifyPin(del)) {
+                        accounts.remove(del);
+                        System.out.println("✅ Account Deleted");
+                    } else
+                        System.out.println("❌ Error");
+                    break;
+
+                case 7:
+                    transferMoney();
+                    break;
+
+                case 8:
+                    System.out.print("Enter Account: ");
+                    BankAccount t = findAccount(sc.nextInt());
+                    if (t != null && verifyPin(t))
+                        t.showTransactions();
+                    else
+                        System.out.println("❌ Error");
+                    break;
+
+                case 9:
+                    bankStats();
+                    break;
+
+                case 10:
+                    System.out.println("Thank You!");
+                    break;
+
+                default:
+                    System.out.println("Invalid Choice");
+            }
+
+        } while (choice != 10);
+    }
+}
