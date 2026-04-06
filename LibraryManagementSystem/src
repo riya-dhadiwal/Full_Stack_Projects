@@ -1,0 +1,254 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    int bookId;
+    String title;
+    String author;
+    String category;
+    boolean isIssued;
+    boolean isReserved;
+    String reservedBy;
+
+    Book(int bookId, String title, String author, String category) {
+        this.bookId = bookId;
+        this.title = title;
+        this.author = author;
+        this.category = category;
+        this.isIssued = false;
+        this.isReserved = false;
+        this.reservedBy = "";
+    }
+
+    void display() {
+        System.out.println("ID: " + bookId +
+                " | Title: " + title +
+                " | Author: " + author +
+                " | Category: " + category +
+                " | Status: " + (isIssued ? "Issued" : "Available") +
+                (isReserved ? " | Reserved by: " + reservedBy : ""));
+    }
+}
+
+public class LibraryManagementSystem {
+
+    static ArrayList<Book> books = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    // 🔍 Find Book
+    static Book findBook(int id) {
+        for (Book b : books) {
+            if (b.bookId == id) return b;
+        }
+        return null;
+    }
+
+    // ➕ Add Book
+    static void addBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        if (findBook(id) != null) {
+            System.out.println("Book ID already exists!");
+            return;
+        }
+
+        System.out.print("Enter Title: ");
+        String title = sc.nextLine();
+
+        System.out.print("Enter Author: ");
+        String author = sc.nextLine();
+
+        System.out.print("Enter Category (Fiction/Tech/Academic/etc): ");
+        String category = sc.nextLine();
+
+        books.add(new Book(id, title, author, category));
+        System.out.println("Book Added!");
+    }
+
+    // 📚 Issue Book
+    static void issueBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+
+        Book b = findBook(id);
+        if (b != null) {
+            if (!b.isIssued && !b.isReserved) {
+                b.isIssued = true;
+                System.out.println("Book Issued!");
+            } else {
+                System.out.println("Book not available!");
+            }
+        } else {
+            System.out.println("❌ Book Not Found!");
+        }
+    }
+
+    // 🔄 Return Book
+    static void returnBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+
+        Book b = findBook(id);
+        if (b != null) {
+            if (b.isIssued) {
+                b.isIssued = false;
+                System.out.println("✅ Book Returned!");
+
+                // Auto-issue if reserved
+                if (b.isReserved) {
+                    System.out.println("📢 Reserved by " + b.reservedBy + " — now issuing...");
+                    b.isIssued = true;
+                    b.isReserved = false;
+                    b.reservedBy = "";
+                }
+
+            } else {
+                System.out.println("❌ Book was not issued!");
+            }
+        } else {
+            System.out.println("❌ Book Not Found!");
+        }
+    }
+
+    // 🔎 View Books
+    static void viewBooks() {
+        if (books.isEmpty()) {
+            System.out.println("❌ No books available.");
+        } else {
+            for (Book b : books) b.display();
+        }
+    }
+
+    // 🏷 Filter by Category
+    static void viewByCategory() {
+        sc.nextLine();
+        System.out.print("Enter category: ");
+        String cat = sc.nextLine();
+
+        boolean found = false;
+        for (Book b : books) {
+            if (b.category.equalsIgnoreCase(cat)) {
+                b.display();
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("❌ No books in this category.");
+        }
+    }
+
+    // 🔍 Search Book
+    static void searchBook() {
+        sc.nextLine();
+        System.out.print("Enter keyword: ");
+        String key = sc.nextLine();
+
+        boolean found = false;
+        for (Book b : books) {
+            if (b.title.toLowerCase().contains(key.toLowerCase()) ||
+                b.author.toLowerCase().contains(key.toLowerCase())) {
+                b.display();
+                found = true;
+            }
+        }
+
+        if (!found) System.out.println("❌ No match found.");
+    }
+
+    // 🗑 Delete Book
+    static void deleteBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+
+        Book b = findBook(id);
+        if (b != null) {
+            books.remove(b);
+            System.out.println("✅ Book Deleted!");
+        } else {
+            System.out.println("❌ Book Not Found!");
+        }
+    }
+
+    // 📌 Reserve Book (ONLINE RESERVATION)
+    static void reserveBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        Book b = findBook(id);
+        if (b != null) {
+            if (!b.isIssued && !b.isReserved) {
+                System.out.println("⚠ Book is available, no need to reserve.");
+            } else if (b.isReserved) {
+                System.out.println("❌ Already reserved by " + b.reservedBy);
+            } else {
+                System.out.print("Enter your name: ");
+                String name = sc.nextLine();
+
+                b.isReserved = true;
+                b.reservedBy = name;
+
+                System.out.println("✅ Book Reserved Successfully!");
+            }
+        } else {
+            System.out.println("❌ Book Not Found!");
+        }
+    }
+
+    // 📊 Stats
+    static void showStats() {
+        int issued = 0, available = 0, reserved = 0;
+
+        for (Book b : books) {
+            if (b.isIssued) issued++;
+            else available++;
+
+            if (b.isReserved) reserved++;
+        }
+
+        System.out.println("📊 Available: " + available);
+        System.out.println("📊 Issued: " + issued);
+        System.out.println("📊 Reserved: " + reserved);
+    }
+
+    // 🚀 MAIN
+    public static void main(String[] args) {
+
+        int choice;
+
+        do {
+            System.out.println("\n--- Library Management System ---");
+            System.out.println("1. Add Book");
+            System.out.println("2. Issue Book");
+            System.out.println("3. Return Book");
+            System.out.println("4. View All Books");
+            System.out.println("5. Delete Book");
+            System.out.println("6. Search Book");
+            System.out.println("7. View By Category");
+            System.out.println("8. Reserve Book");
+            System.out.println("9. Show Stats");
+            System.out.println("10. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1: addBook(); break;
+                case 2: issueBook(); break;
+                case 3: returnBook(); break;
+                case 4: viewBooks(); break;
+                case 5: deleteBook(); break;
+                case 6: searchBook(); break;
+                case 7: viewByCategory(); break;
+                case 8: reserveBook(); break;
+                case 9: showStats(); break;
+                case 10: System.out.println("Exiting..."); break;
+                default: System.out.println("❌ Invalid choice!");
+            }
+
+        } while (choice != 10);
+    }
+}
