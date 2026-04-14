@@ -1,1 +1,239 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.*;
 
+// Employee Class
+class Employee implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    int empId;
+    String name;
+    String designation;
+    double basicSalary;
+    double hra, da, grossSalary, deductions, netSalary;
+
+    // Constructor
+    Employee(int empId, String name, String designation, double basicSalary) {
+        this.empId = empId;
+        this.name = name;
+        this.designation = designation;
+        this.basicSalary = basicSalary;
+        calculateSalary();
+    }
+
+    // Salary Calculation
+    void calculateSalary() {
+        hra = 0.20 * basicSalary;
+        da = 0.10 * basicSalary;
+        grossSalary = basicSalary + hra + da;
+        deductions = 0.08 * grossSalary;
+        netSalary = grossSalary - deductions;
+    }
+
+    void displayShort() {
+        System.out.println("ID: " + empId +
+                ", Name: " + name +
+                ", Net Salary: ₹" + netSalary);
+    }
+
+    void displayFull() {
+        System.out.println("\n--- Salary Slip ---");
+        System.out.println("ID: " + empId);
+        System.out.println("Name: " + name);
+        System.out.println("Designation: " + designation);
+        System.out.println("Basic Salary: ₹" + basicSalary);
+        System.out.println("HRA: ₹" + hra);
+        System.out.println("DA: ₹" + da);
+        System.out.println("Gross Salary: ₹" + grossSalary);
+        System.out.println("Deductions: ₹" + deductions);
+        System.out.println("Net Salary: ₹" + netSalary);
+    }
+}
+
+// Main Class
+public class PayrollManagementSystem {
+
+    static ArrayList<Employee> employees = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+    static final String FILE_NAME = "employees.dat";
+
+    // Save data
+    static void saveToFile() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
+            oos.writeObject(employees);
+            oos.close();
+        } catch (IOException e) {
+            System.out.println("Error saving file.");
+        }
+    }
+
+    // Load data (Eclipse-safe version)
+    static void loadFromFile() {
+        try {
+            File file = new File(FILE_NAME);
+            if (!file.exists()) return;
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+            Object obj = ois.readObject();
+
+            if (obj instanceof ArrayList<?>) {
+                employees = (ArrayList<Employee>) obj;
+            }
+
+            ois.close();
+
+        } catch (Exception e) {
+            System.out.println("No previous data found.");
+        }
+    }
+
+    // Find employee
+    static Employee findEmployee(int id) {
+        for (Employee e : employees) {
+            if (e.empId == id) return e;
+        }
+        return null;
+    }
+
+    // Add employee
+    static void addEmployee() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        if (findEmployee(id) != null) {
+            System.out.println("Employee already exists!");
+            return;
+        }
+
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter Designation: ");
+        String desig = sc.nextLine();
+
+        System.out.print("Enter Salary: ");
+        double salary = sc.nextDouble();
+
+        employees.add(new Employee(id, name, desig, salary));
+        saveToFile();
+
+        System.out.println("Employee Added Successfully!");
+    }
+
+    // Update employee
+    static void updateEmployee() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        Employee e = findEmployee(id);
+        if (e != null) {
+            sc.nextLine();
+
+            System.out.print("New Name: ");
+            e.name = sc.nextLine();
+
+            System.out.print("New Designation: ");
+            e.designation = sc.nextLine();
+
+            System.out.print("New Salary: ");
+            e.basicSalary = sc.nextDouble();
+
+            e.calculateSalary();
+            saveToFile();
+
+            System.out.println("Employee Updated!");
+        } else {
+            System.out.println("Employee Not Found!");
+        }
+    }
+
+    // Delete employee
+    static void deleteEmployee() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        Employee e = findEmployee(id);
+        if (e != null) {
+            employees.remove(e);
+            saveToFile();
+            System.out.println("Employee Deleted!");
+        } else {
+            System.out.println("Employee Not Found!");
+        }
+    }
+
+    // View one
+    static void viewEmployee() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        Employee e = findEmployee(id);
+        if (e != null) e.displayFull();
+        else System.out.println("Employee Not Found!");
+    }
+
+    // View all
+    static void viewAll() {
+        if (employees.isEmpty()) {
+            System.out.println("No employees found.");
+        } else {
+            for (Employee e : employees) {
+                e.displayShort();
+            }
+        }
+    }
+
+    // Search by name
+    static void searchByName() {
+        sc.nextLine();
+        System.out.print("Enter name: ");
+        String name = sc.nextLine().toLowerCase();
+
+        boolean found = false;
+
+        for (Employee e : employees) {
+            if (e.name.toLowerCase().contains(name)) {
+                e.displayShort();
+                found = true;
+            }
+        }
+
+        if (!found) System.out.println("No match found.");
+    }
+
+    // Main method
+    public static void main(String[] args) {
+
+        loadFromFile();
+        int choice;
+
+        do {
+            System.out.println("\n--- Payroll System ---");
+            System.out.println("1. Add Employee");
+            System.out.println("2. View Employee");
+            System.out.println("3. View All");
+            System.out.println("4. Update Employee");
+            System.out.println("5. Delete Employee");
+            System.out.println("6. Search by Name");
+            System.out.println("7. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1: addEmployee(); break;
+                case 2: viewEmployee(); break;
+                case 3: viewAll(); break;
+                case 4: updateEmployee(); break;
+                case 5: deleteEmployee(); break;
+                case 6: searchByName(); break;
+                case 7: System.out.println("Exiting..."); break;
+                default: System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 7);
+    }
+}
