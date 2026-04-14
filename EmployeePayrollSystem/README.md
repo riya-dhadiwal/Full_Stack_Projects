@@ -1,10 +1,10 @@
-# 💼 Employee Payroll Management System (Java)
+# Employee Payroll Management System (Java)
 
 A **console-based Java application** to manage employee records and perform payroll calculations efficiently. This project demonstrates core Java concepts such as **OOP, file handling, and data structures**.
 
 ---
 
-## 📌 Features
+##  Features
 
 ✔ Add Employee  
 ✔ Update Employee Details  
@@ -70,7 +70,7 @@ Open in Eclipse / IntelliJ / VS Code
 Run:
 PayrollManagementSystem.java
 ``` 
-## 📸 Sample Output
+## Sample Output
 --- Payroll System ---
 1. Add Employee
 2. View Employee
@@ -80,19 +80,19 @@ PayrollManagementSystem.java
 6. Search by Name
 7. Exit
 
-## 💾 Data Persistence
+##  Data Persistence
 - Employee data is stored in a file:
 employees.dat
 - Data is automatically loaded when the program starts
 
-## 🧠 Concepts Covered
+##  Concepts Covered
 - Object-Oriented Programming (OOP)
 - File Handling using Serialization
 - Exception Handling
 - Menu-driven Programs
 - Data Structures (ArrayList)
 
-## 🚀 Future Enhancements
+##  Future Enhancements
 🔹 MySQL + JDBC Integration
 
 🔹 GUI using Java Swing / JavaFX
