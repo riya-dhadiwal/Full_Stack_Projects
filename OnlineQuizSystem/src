@@ -1,0 +1,207 @@
+import java.util.*;
+import java.io.*;
+
+class Question {
+    String question;
+    String[] options;
+    char correctAnswer;
+    String funFact;
+
+    Question(String question, String[] options, char correctAnswer, String funFact) {
+        this.question = question;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
+        this.funFact = funFact;
+    }
+}
+
+public class QuizGame {
+
+    static Scanner sc = new Scanner(System.in);
+    static final String FILE_NAME = "leaderboard.txt";
+
+    public static void main(String[] args) {
+
+        System.out.println("===============================");
+        System.out.println("     🎮 QUIZ GAME 🎮");
+        System.out.println("===============================");
+
+        System.out.print("Enter your name: ");
+        String name = sc.nextLine();
+
+        while (true) {
+            System.out.println("\n1. Start Quiz");
+            System.out.println("2. View Leaderboard");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    startQuiz(name);
+                    break;
+                case 2:
+                    viewLeaderboard();
+                    break;
+                case 3:
+                    System.out.println("Thanks for playing!");
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+
+    public static void startQuiz(String name) {
+
+        ArrayList<Question> quiz = new ArrayList<>();
+
+        quiz.add(new Question("Java is a ____?",
+                new String[]{"A. Language", "B. OS", "C. Hardware", "D. Browser"}, 'A',
+                "Java runs on JVM making it platform independent!"));
+
+        quiz.add(new Question("Which keyword is used to inherit a class?",
+                new String[]{"A. super", "B. this", "C. extends", "D. implements"}, 'C',
+                "Inheritance helps reuse code!"));
+
+        quiz.add(new Question("JVM stands for?",
+                new String[]{"A. Java Virtual Machine", "B. Java Visual Model", "C. Just VM", "D. None"}, 'A',
+                "JVM executes Java bytecode!"));
+
+        quiz.add(new Question("Which is not OOP concept?",
+                new String[]{"A. Inheritance", "B. Polymorphism", "C. Compilation", "D. Encapsulation"}, 'C',
+                "Compilation is not OOP concept!"));
+
+        Collections.shuffle(quiz);
+
+        int score = 0;
+        int points = 0;
+        int streak = 0;
+        boolean used5050 = false;
+        boolean usedSkip = false;
+
+        for (Question q : quiz) {
+
+            System.out.println("\n--------------------------------");
+            System.out.println("🔥 Streak: " + streak + " | 💰 Points: " + points);
+            System.out.println(q.question);
+
+            List<String> opts = new ArrayList<>(Arrays.asList(q.options));
+
+            for (String opt : opts) {
+                System.out.println(opt);
+            }
+
+            System.out.println("\nChoose:");
+            System.out.println("1. Answer");
+            System.out.println("2. Use Lifeline");
+            int choice = sc.nextInt();
+
+            if (choice == 2) {
+                System.out.println("Lifelines:");
+                if (!used5050) System.out.println("1. 50-50");
+                if (!usedSkip) System.out.println("2. Skip");
+                int life = sc.nextInt();
+
+                if (life == 1 && !used5050) {
+                    used5050 = true;
+                    System.out.println("50-50 used!");
+
+                    // remove 2 wrong options
+                    opts.removeIf(opt -> opt.charAt(0) != q.correctAnswer && Math.random() < 0.5);
+
+                    for (String opt : opts) {
+                        System.out.println(opt);
+                    }
+                } else if (life == 2 && !usedSkip) {
+                    usedSkip = true;
+                    System.out.println("Question Skipped!");
+                    continue;
+                }
+            }
+
+            System.out.print("Enter Answer: ");
+            char ans = sc.next().toUpperCase().charAt(0);
+
+            if (ans == q.correctAnswer) {
+                System.out.println("✅ Boom! Correct!");
+                System.out.print("\007");
+
+                score++;
+                streak++;
+                points += 10;
+
+                if (streak >= 3) {
+                    points += 5;
+                    System.out.println("🔥 Streak Bonus +5!");
+                }
+
+            } else {
+                System.out.println("❌ Oops! Wrong!");
+                System.out.print("\007");
+
+                streak = 0;
+                points -= 2;
+            }
+
+            System.out.println("💡 Fun Fact: " + q.funFact);
+        }
+
+        double percentage = (score * 100.0) / quiz.size();
+
+        System.out.println("\n===============================");
+        System.out.println("        🎯 RESULT");
+        System.out.println("===============================");
+        System.out.println("Name: " + name);
+        System.out.println("Score: " + score);
+        System.out.println("Points: " + points);
+        System.out.println("Percentage: " + percentage + "%");
+
+        if (percentage >= 80) System.out.println("🔥 Excellent!");
+        else if (percentage >= 50) System.out.println("👍 Good!");
+        else System.out.println("😅 Keep Practicing!");
+
+        saveLeaderboard(name, score);
+
+        System.out.println("\n1. Retry");
+        System.out.println("2. Menu");
+        int retry = sc.nextInt();
+
+        if (retry == 1) startQuiz(name);
+    }
+
+    public static void saveLeaderboard(String name, int score) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
+            bw.write(name + "," + score);
+            bw.newLine();
+            bw.close();
+        } catch (Exception e) {
+            System.out.println("Error saving leaderboard.");
+        }
+    }
+
+    public static void viewLeaderboard() {
+        try {
+            File file = new File(FILE_NAME);
+
+            if (!file.exists()) {
+                System.out.println("No scores yet!");
+                return;
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            System.out.println("\n🏆 Leaderboard:");
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                System.out.println(data[0] + " - " + data[1]);
+            }
+
+            br.close();
+        } catch (Exception e) {
+            System.out.println("Error reading leaderboard.");
+        }
+    }
+}
